@@ -13,12 +13,12 @@ steps:
   - type: Command
     name: "Install dependencies & cyclonedx-node-npm package"
     command: |
-      cd ai-speech-realtime-sdk-typescript && npm install --prefix ai-speech-realtime-sdk-typescript && npm install --save-dev @cyclonedx/cyclonedx-npm@1.19.3
+      cd ai-speech-realtime-sdk-typescript && npm install && npm install --save-dev @cyclonedx/cyclonedx-npm@1.19.3
   - type: Command
     name: "Run cyclonedx-node-npm package"
     command: |
       # For more details, visit https://github.com/CycloneDX/cyclonedx-node-npm/blob/main/README.md
-      ai-speech-realtime-sdk-typescript && npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file artifactSBOM.json --spec-version 1.4
+      cd ai-speech-realtime-sdk-typescript && npx @cyclonedx/cyclonedx-npm --omit dev --output-format JSON --output-file ../artifactSBOM.json --spec-version 1.4
 outputArtifacts:
   - name: artifactSBOM
     type: BINARY
