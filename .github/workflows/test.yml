@@ -1,4 +1,4 @@
-name: Run Python Unit Tests
+name: Run TypeScript Unit Tests
 
 on:
   pull_request:  # Trigger the workflow on pull requests
@@ -24,7 +24,7 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: cd ai-speech-realtime-sdk-typescript && npm install
 
 
       # Step 4: Run tests
