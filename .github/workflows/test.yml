@@ -30,5 +30,5 @@ jobs:
       # Step 4: Run tests
       - name: Run unit tests
         run: |
-          npm run test
+          cd ai-speech-realtime-sdk-typescript && npm run test
         continue-on-error: false  # Fail the job if tests fail
