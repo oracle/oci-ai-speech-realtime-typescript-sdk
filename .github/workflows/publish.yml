@@ -1,0 +1,55 @@
+name: Publish Python Package to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+      # Step 2: Set up Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20 
+
+      # Step 3: Install dependencies
+    - name: Install dependencies
+      run: cd ai-speech-realtime-sdk-typescript && npm install
+
+      # Step 4: Run tests
+    - name: Run unit tests
+      run: |
+        cd ai-speech-realtime-sdk-typescript && npm run test
+      continue-on-error: false  # Fail the job if tests fail
+
+    - name: Extract and validate tag version
+      id: extract_version
+      run: |
+        # Extract the version from package.json using sed
+        PACKAGE_VERSION=$(sed -n 's/.*"version": "\(.*\)".*/\1/p' package.json)
+
+        # Extract the tag version (removing the 'v' prefix)
+        TAG_VERSION=${GITHUB_REF#refs/tags/v}
+
+        # Compare the two versions
+        if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Version mismatch detected!"
+            echo "package.json version: $PACKAGE_VERSION"
+            echo "Git tag version: $TAG_VERSION"
+            exit 1
+        fi
+
+    - name: Publish to NPM
+      run: echo "Publish step not ready yet"
