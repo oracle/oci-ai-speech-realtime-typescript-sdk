@@ -1,6 +1,6 @@
 {
   "name": "oci-ai-speech-realtime",
-  "version": "2.0.0",
+  "version": "2.0.0-rc1",
   "description": "OCI NodeJS client for the OCI AI Speech Realtime Service",
   "main": "dist/index.js",
   "scripts": {

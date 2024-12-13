@@ -1,4 +1,4 @@
-name: Publish Python Package to PyPI
+name: Publish TS Package to NPM
 
 on:
   push:
@@ -12,11 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
 
       # Step 2: Set up Node.js
     - name: Set up Node.js
@@ -52,4 +47,6 @@ jobs:
         fi
 
     - name: Publish to NPM
-      run: cd ai-speech-realtime-sdk-typescript && echo "Publish step not ready yet"
+      run: cd ai-speech-realtime-sdk-typescript && npm publish
+      env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
