@@ -13,7 +13,7 @@
   "license": "UPL",
   "repository": {
     "type": "git",
-    "url": "https://github.com/oracle/oci-ai-speech-realtime-typescript-sdk"
+    "url": "git+https://github.com/oracle/oci-ai-speech-realtime-typescript-sdk.git"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.6.7",
