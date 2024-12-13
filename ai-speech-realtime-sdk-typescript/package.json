@@ -1,5 +1,5 @@
 {
-  "name": "oci-ai-speech-realtime",
+  "name": "@oracle/oci-ai-speech-realtime",
   "version": "2.0.0-rc1",
   "description": "OCI NodeJS client for the OCI AI Speech Realtime Service",
   "main": "dist/index.js",
@@ -11,6 +11,10 @@
   },
   "author": "Oracle",
   "license": "UPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oracle/oci-ai-speech-realtime-typescript-sdk"
+  },
   "devDependencies": {
     "@types/node-fetch": "^2.6.7",
     "@types/ws": "^8.5.4",

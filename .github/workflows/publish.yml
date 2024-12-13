@@ -47,6 +47,6 @@ jobs:
         fi
 
     - name: Publish to NPM
-      run: cd ai-speech-realtime-sdk-typescript && npm publish
+      run: cd ai-speech-realtime-sdk-typescript && npm publish --tag beta
       env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
