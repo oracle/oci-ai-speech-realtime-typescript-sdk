@@ -38,7 +38,7 @@ jobs:
       id: extract_version
       run: |
         # Extract the version from package.json using sed
-        PACKAGE_VERSION=$(sed -n 's/.*"version": "\(.*\)".*/\1/p' package.json)
+        PACKAGE_VERSION=$(sed -n 's/.*"version": "\(.*\)".*/\1/p' ai-speech-realtime-sdk-typescript/package.json)
 
         # Extract the tag version (removing the 'v' prefix)
         TAG_VERSION=${GITHUB_REF#refs/tags/v}
@@ -52,4 +52,4 @@ jobs:
         fi
 
     - name: Publish to NPM
-      run: echo "Publish step not ready yet"
+      run: cd ai-speech-realtime-sdk-typescript && echo "Publish step not ready yet"
