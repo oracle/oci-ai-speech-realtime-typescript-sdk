@@ -8,7 +8,7 @@
     "build": "rimraf ./dist && tsc",
     "prepack": "cp ../LICENSE.txt ../THIRD_PARTY_LICENSES.txt .",
     "test": "jest",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "author": "Oracle",
   "license": "UPL",
