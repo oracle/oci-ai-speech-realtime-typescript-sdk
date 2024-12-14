@@ -16,14 +16,14 @@ if (process.stdin.isTTY) {
 }
 
 import * as common from "oci-common";
-import { RealtimeSpeechClient, RealtimeSpeechClientListener, RealtimeParameters, RealtimeWebSocketState } from "oci-aispeech-realtime";
+import { RealtimeSpeechClient, RealtimeSpeechClientListener, RealtimeWebSocketState } from "@oracle/oci-ai-speech-realtime";
 import { Readable } from "stream";
-import { RealtimeMessageAckAudio, RealtimeMessageConnect, RealtimeMessageResult } from "oci-aispeech/lib/model";
+import { RealtimeMessageAckAudio, RealtimeMessageConnect, RealtimeMessageResult, RealtimeParameters } from "oci-aispeech/lib/model";
 
 var para = "";
 
-const serviceRegion = "<region>";
-const compartmentId = "<compartment-id>";
+const serviceRegion = "us-ashburn-1";
+const compartmentId = "ocid1.compartment.oc1..aaaaaaaafhejmv2sovpb2g7hxjfkonpxzlhb3ued6iutapxbqafjhl6s7xdq";
 const realtimeClientParameters: RealtimeParameters = {
   customizations: [],
   languageCode: "en-US",
