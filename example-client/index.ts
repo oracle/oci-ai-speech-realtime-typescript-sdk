@@ -22,8 +22,8 @@ import { RealtimeMessageAckAudio, RealtimeMessageConnect, RealtimeMessageResult,
 
 var para = "";
 
-const serviceRegion = "us-ashburn-1";
-const compartmentId = "ocid1.compartment.oc1..aaaaaaaafhejmv2sovpb2g7hxjfkonpxzlhb3ued6iutapxbqafjhl6s7xdq";
+const serviceRegion = "<region>"; //like us-ashburn-1
+const compartmentId = "<compartment-id>";
 const realtimeClientParameters: RealtimeParameters = {
   customizations: [],
   languageCode: "en-US",
