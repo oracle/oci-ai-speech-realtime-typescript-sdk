@@ -1,0 +1,37 @@
+{
+  "name": "@oracle/oci-ai-speech-realtime",
+  "version": "2.0.0",
+  "description": "OCI NodeJS client for the OCI AI Speech Realtime Service",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "build": "rimraf ./dist && tsc",
+    "prepack": "cp ../LICENSE.txt ../THIRD_PARTY_LICENSES.txt .",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Oracle",
+  "license": "UPL",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oracle/oci-ai-speech-realtime-typescript-sdk.git"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.7",
+    "@types/ws": "^8.5.4",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.40.0",
+    "rimraf": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5"
+  },
+  "dependencies": {
+    "oci-aispeech": "^2.91.0",
+    "oci-common": "^2.91.0",
+    "ws": "^8.14.2"
+  }
+}

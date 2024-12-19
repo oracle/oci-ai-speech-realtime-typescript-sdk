@@ -1,0 +1,6 @@
+**/dist/
+**/node_modules/
+ai-speech-realtime-sdk-typescript/LICENSE.txt
+ai-speech-realtime-sdk-typescript/THIRD_PARTY_LICENSES.txt
+**/coverage/
+.vscode
