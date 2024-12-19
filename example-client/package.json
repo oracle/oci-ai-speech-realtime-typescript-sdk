@@ -13,7 +13,7 @@
   "author": "Oracle",
   "license": "UPL",
   "dependencies": {
-    "oci-ai-speech-realtime": "file:../ai-speech-realtime-sdk-typescript/oci-ai-speech-realtime-2.0.0.tgz",
+    "@oracle/oci-ai-speech-realtime": "2.0.0-rc2",
     "node-record-lpcm16": "1.0.1"
   },
   "devDependencies": {

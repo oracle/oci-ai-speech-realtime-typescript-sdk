@@ -49,20 +49,13 @@ const printLogs = (logString: any[]) => {
 };
 
 class MyRealtimeClientListener implements RealtimeSpeechClientListener {
-  constructor(customMessage: string, customNumber: number) {
-    this.customMessage = customMessage;
-    this.customNumber = customNumber;
-  } // modify the constructor with whatever needs you have
-  customMessage: string;
-  customNumber: number;
-
   onClose(closeEvent: WebSocket.CloseEvent) {
     try {
       recorder && recorder.stop();
     } catch (error) {
       printLogs(["Audio Error: " + error]);
     }
-    printLogs(["\x1b[31mCustom variables:" + this.customNumber + "\x1b[0m" + " WebSocket Server Closed with code: " + closeEvent.code + " " + closeEvent.reason]);
+
   }
 
   onError(error: Error) {
@@ -71,16 +64,16 @@ class MyRealtimeClientListener implements RealtimeSpeechClientListener {
     } catch (err) {
       printLogs([err]);
     }
-    printLogs(["\x1b[31mCustom variables:" + this.customNumber + "\x1b[0m" + " WebSocket Server Error", error.message]);
+    printLogs(["WebSocket Server Error", error.message]);
   }
 
   onConnect(openEvent: WebSocket.Event) {
-    printLogs(["\x1b[31mCustom variables:" + this.customNumber + "\x1b[0m" + " WebSocket Client Connected"]);
+    printLogs(["WebSocket Client Connected"]);
   }
 
   onResult(resultMessage: RealtimeMessageResult) {
     if (resultMessage) {
-      printLogs(["\x1b[31mCustom variables:" + this.customMessage + "\x1b[0m" + " " + JSON.stringify(resultMessage)]);
+      printLogs([JSON.stringify(resultMessage)]);
 
       if (resultMessage.event === RealtimeMessageResult.event && !resultMessage.transcriptions[0].isFinal) {
         var len = para.split(/\r\n|\r|\n/).length;
@@ -102,7 +95,7 @@ class MyRealtimeClientListener implements RealtimeSpeechClientListener {
   onConnectMessage(connectMessage: RealtimeMessageConnect) {
     console.log(connectMessage);
     if (connectMessage) {
-      printLogs(["\x1b[31mCustom variables:" + this.customMessage + "\x1b[0m" + " " + JSON.stringify(connectMessage)]);
+      printLogs([JSON.stringify(connectMessage)]);
       console.log("🟢");
       recorder = record.record({
         sampleRate: 16000, // try setting to 8000
@@ -149,7 +142,7 @@ const startSession = (logsEnabled: boolean) => {
        * optionally pass custom parameters to the Listeners
        * here we have passed a custom string and an integer
        */
-      new MyRealtimeClientListener("Optional Intermediate Message", 8080),
+      new MyRealtimeClientListener(),
       provider,
       provider.getRegion(),
       compartmentId,

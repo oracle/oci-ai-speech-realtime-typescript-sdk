@@ -51,7 +51,7 @@ export class RealtimeSpeechClient {
     this.compartmentId = compartmentId;
     if (realtimeParameters) this.realtimeParameters = realtimeParameters;
     if (realtimeEndpoint) this.realtimeEndpoint = realtimeEndpoint;
-    else this.realtimeEndpoint = `ws://realtime.aiservice-preprod.${this.region.regionId}.oci.oracleiaas.com`;
+    else this.realtimeEndpoint = `wss://realtime.aiservice.${this.region.regionId}.oci.oraclecloud.com`;
   }
 
   provider: common.AuthenticationDetailsProvider;
