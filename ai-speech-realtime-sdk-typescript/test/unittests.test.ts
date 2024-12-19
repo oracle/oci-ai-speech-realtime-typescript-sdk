@@ -133,7 +133,7 @@ describe("Test typescript sdk client", () => {
         MockWebSocket.instances = [];
         speechClient.connect()
         mockWebsocket = MockWebSocket.instances[0]
-        expect(mockWebsocket.url).toBe("ws://realtime.aiservice-preprod.testId.oci.oracleiaas.com/ws/transcribe/stream?isAckEnabled=false&shouldIgnoreInvalidCustomizations=false&partialSilenceThresholdInMs=0&finalSilenceThresholdInMs=2000&stabilizePartialResults=NONE&languageCode=en-US&modelDomain=GENERIC&customizations=%5B%22test%22%5D")
+        expect(mockWebsocket.url).toBe("wss://realtime.aiservice.testId.oci.oraclecloud.com/ws/transcribe/stream?isAckEnabled=false&shouldIgnoreInvalidCustomizations=false&partialSilenceThresholdInMs=0&finalSilenceThresholdInMs=2000&stabilizePartialResults=NONE&languageCode=en-US&modelDomain=GENERIC&customizations=%5B%22test%22%5D")
     })
 
     it("should close", () => {
