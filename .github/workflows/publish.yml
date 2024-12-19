@@ -49,6 +49,6 @@ jobs:
     - name: Publish to NPM
       run: |
         echo "first 4 chars: ${NODE_AUTH_TOKEN:0:4}"
-        cd ai-speech-realtime-sdk-typescript && npm --userconfig ./.publish-npmrc publish --tag beta --access public
+        cd ai-speech-realtime-sdk-typescript && npm --userconfig ./.publish-npmrc publish --access public
       env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
