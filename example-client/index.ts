@@ -22,8 +22,18 @@ import { RealtimeMessageAckAudio, RealtimeMessageConnect, RealtimeMessageResult,
 
 var para = "";
 
-const serviceRegion = "<region>"; //like us-ashburn-1
-const compartmentId = "<compartment-id>";
+const { Command } = require('commander');
+const program = new Command();
+
+program
+  .requiredOption('-c, --compartmentId <id>', 'Specify the Compartment ID')
+  .requiredOption('-r, --region <region>', 'Specify the Region')
+  .parse(process.argv);
+
+const options = program.opts();
+const serviceRegion = options.region; //like us-ashburn-1
+const compartmentId = options.compartmentId;
+
 const realtimeClientParameters: RealtimeParameters = {
   customizations: [],
   languageCode: "en-US",
