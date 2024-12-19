@@ -9,7 +9,7 @@ This repository contains the source code for the TypeScript SDK to connect to th
 Do the following to install the SDK:
 
 ```bash
-npm install oci-ai-speech-realtime
+npm install @oracle/oci-ai-speech-realtime
 ```
 
 You can also choose to clone this git repo and install from source.

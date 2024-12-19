@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "rimraf ./dist && tsc",
-    "prepack": "cp ../LICENSE.txt ../THIRD_PARTY_LICENSES.txt .",
+    "prepack": "cp ../LICENSE.txt ../THIRD_PARTY_LICENSES.txt ../README.md .",
     "test": "jest",
     "prepublishOnly": "npm run build"
   },

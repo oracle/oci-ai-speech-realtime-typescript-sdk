@@ -27,7 +27,6 @@ If you want to test the package build in the source, first go back to the `../ai
 
 In `index.ts`,
 Update details in lines **25-45** with the following details:
-- `compartmentId`
 - `authentication method` and `profile`
 - `realtimeClientParameters` object present at with the parameters you want to use in the realtime session. More information about the parameters is provided in the [RealtimeParameters](#realtimeparameters) section below.
 
@@ -41,18 +40,13 @@ npm run build
 
 ## Running the Project
 
-### A. Run project in dev mode
+
+### Run project
+
+Specify the compartment ID and region in the start command. The following command runs it in us-ashburn-1.
 
 ```
-npm run start:dev
-```
-
-This will start the project in hot-reload mode where making changes to `index.ts` will automatically restart the app.
-
-### B. Run project
-
-```
-npm start
+npm start -- -c <compartment-id> -r us-ashburn-1
 ```
 
 This will start the compiled project which was built earlier using `npm run build`.
