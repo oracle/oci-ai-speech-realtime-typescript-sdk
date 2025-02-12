@@ -12,13 +12,13 @@ Third Party License File for the OCI Realtime Speech Web SDK
 
 ======================== Third Party Components ========================
 oci-common
-* Copyright (c) 2020, 2024, Oracle and/or its affiliates.  All rights reserved.
+* Copyright (c) 2020, 2025, Oracle and/or its affiliates.  All rights reserved.
 * License: The Universal Permissive License (UPL) Version 1.0, Apache License 2.0
 * Source code: https://github.com/oracle/oci-typescript-sdk
 * Project home: https://github.com/oracle/oci-typescript-sdk
 
 oci-aispeech
-* Copyright (c) 2020, 2024, Oracle and/or its affiliates.  All rights reserved.
+* Copyright (c) 2020, 2025, Oracle and/or its affiliates.  All rights reserved.
 * License: The Universal Permissive License (UPL) Version 1.0, Apache License 2.0
 * Source code: https://github.com/oracle/oci-typescript-sdk
 * Project home: https://github.com/oracle/oci-typescript-sdk

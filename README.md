@@ -19,22 +19,23 @@ You can also choose to clone this git repo and install from source.
 The home page for the OCI Speech Service can be found [here](https://www.oracle.com/artificial-intelligence/speech/).
 The API reference for OCI Speech Service can be found [here](https://docs.oracle.com/en-us/iaas/api/#/en/speech/latest/).
 
-Note that realtime speech URLs are distinct from the speech URLs mentioned in the above link. To obtain a realtime speech url, take a speech url, and replace 'speech' with realtime. Also replace https with wss. 
+Note that realtime speech URLs are distinct from the speech URLs mentioned in the above link. To obtain a realtime speech url, take a speech url, and replace 'speech' with realtime. Also replace https with wss.
 
 For example, for the following speech url:
 
-```https://speech.aiservice.af-johannesburg-1.oci.oraclecloud.com```
+`https://speech.aiservice.af-johannesburg-1.oci.oraclecloud.com`
 
 This is the corresponding realtime speech URL:
 
-```wss://realtime.aiservice.af-johannesburg-1.oci.oraclecloud.com```
+`wss://realtime.aiservice.af-johannesburg-1.oci.oraclecloud.com`
 
 ## Examples
+
 We have an example here itself, it can be found in the [example-client](example-client/) directory.
 
-
 ## Development
-Follow the instructions in the [Development Readme](ai-speech-realtime-sdk-typescript/README.md) to get started with local development/testing of the SDK code. 
+
+Follow the instructions in the [Development Readme](ai-speech-realtime-sdk-typescript/README.md) to get started with local development/testing of the SDK code.
 
 ## Contributing
 
@@ -46,7 +47,7 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 
 ## License
 
-Copyright (c) 2024 Oracle and/or its affiliates.
+Copyright (c) 2024, 2025, Oracle and/or its affiliates.
 
 Released under the Universal Permissive License v1.0 as shown at
 <https://oss.oracle.com/licenses/upl/>.

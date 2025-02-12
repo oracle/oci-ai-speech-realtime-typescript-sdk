@@ -1,8 +1,8 @@
 /*
-**
-** Copyright (c) 2024 Oracle and/or its affiliates
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
-*/
+ **
+ ** Copyright (c) 2024, 2025, Oracle and/or its affiliates
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+ */
 
 import WebSocket, { MessageEvent, CloseEvent, ErrorEvent, Event } from "ws";
 import common, { DefaultRequestSigner, HttpRequest } from "oci-common";
@@ -28,6 +28,12 @@ export enum RealtimeWebSocketState {
   "ERROR",
 }
 
+enum RealtimeCredentialState {
+  "INACTIVE",
+  "CREATING",
+  "ACTIVE",
+}
+
 export interface RealtimeSpeechClientListener {
   onClose(closeEvent: CloseEvent): any;
   onConnect(openEvent: Event): any;
@@ -40,26 +46,23 @@ export class RealtimeSpeechClient {
   constructor(
     realtimeClientListener: RealtimeSpeechClientListener,
     provider: common.AuthenticationDetailsProvider,
-    region: common.Region,
+    region: any,
     compartmentId: string,
-    realtimeEndpoint?: string,
+    realtimeEndpoint: string,
     realtimeParameters?: RealtimeParameters
   ) {
     this.realtimeClientListener = realtimeClientListener;
     this.provider = provider;
-    this.region = region;
     this.compartmentId = compartmentId;
+    this.realtimeEndpoint = realtimeEndpoint;
     if (realtimeParameters) this.realtimeParameters = realtimeParameters;
-    if (realtimeEndpoint) this.realtimeEndpoint = realtimeEndpoint;
-    else this.realtimeEndpoint = `wss://realtime.aiservice.${this.region.regionId}.oci.oraclecloud.com`;
   }
 
-  provider: common.AuthenticationDetailsProvider;
-  region: common.Region;
-  realtimeEndpoint: string;
-  realtimeWebSocketClient: WebSocket;
-  realtimeWebSocketState: RealtimeWebSocketState;
-  realtimeParameters: RealtimeParameters = {
+  private provider: common.AuthenticationDetailsProvider;
+  private realtimeEndpoint: string;
+  private realtimeWebSocketClient: WebSocket;
+  private realtimeWebSocketState: RealtimeWebSocketState;
+  private realtimeParameters: RealtimeParameters = {
     isAckEnabled: false,
     shortPauseInMs: 0,
     longPauseInMs: 2000,
@@ -68,18 +71,46 @@ export class RealtimeSpeechClient {
     languageCode: "en-US",
     modelDomain: RealtimeParameters.ModelDomain.Generic,
     encoding: "audio/raw;rate=16000",
+    punctuation: RealtimeParameters.Punctuation.None,
   } as RealtimeParameters;
-  mediaStream: MediaStream;
-  realtimeAuthPayload: RealtimeMessageAuthentication;
-  compartmentId: string;
-  realtimeClientListener: RealtimeSpeechClientListener;
+  private compartmentId: string;
+  private realtimeClientListener: RealtimeSpeechClientListener;
+
+  private static realtimeCredential: RealtimeMessageAuthenticationCredentials;
+  private static realtimeCredentialTime: number = 0;
+  private static realtimeCredentialState: RealtimeCredentialState = RealtimeCredentialState.INACTIVE;
+
+  private sendCredentials = () => {
+    const now = Date.now();
+    if (RealtimeSpeechClient.realtimeCredentialState === RealtimeCredentialState.INACTIVE || RealtimeSpeechClient.realtimeCredentialTime + 60000 < now) {
+      RealtimeSpeechClient.realtimeCredentialState = RealtimeCredentialState.CREATING;
+      RealtimeSpeechClient.realtimeCredentialTime = now;
+      this.generateCredentials().then(() => {
+        this.realtimeWebSocketClient.send(JSON.stringify(RealtimeSpeechClient.realtimeCredential));
+      });
+    } else if (RealtimeSpeechClient.realtimeCredentialState === RealtimeCredentialState.CREATING) {
+      setTimeout(() => {
+        this.sendCredentials();
+      }, 10);
+    } else if (RealtimeSpeechClient.realtimeCredentialState === RealtimeCredentialState.ACTIVE) {
+      this.realtimeWebSocketClient.send(JSON.stringify(RealtimeSpeechClient.realtimeCredential));
+    }
+  };
+
+  private initializeCredentialsCreation = () => {
+    const now = Date.now();
+    if (RealtimeSpeechClient.realtimeCredentialState === RealtimeCredentialState.INACTIVE || RealtimeSpeechClient.realtimeCredentialTime + 60000 < now) {
+      RealtimeSpeechClient.realtimeCredentialState = RealtimeCredentialState.CREATING;
+      RealtimeSpeechClient.realtimeCredentialTime = now;
+      this.generateCredentials();
+    }
+  };
 
   private onWebsocketOpen = (event: Event) => {
     this.realtimeClientListener.onConnect(event);
     this.setWebSocketState(RealtimeWebSocketState.AUTHENTICATING);
-    //auth client
     try {
-      if (this.realtimeAuthPayload !== null) this.realtimeWebSocketClient.send(JSON.stringify(this.realtimeAuthPayload));
+      this.sendCredentials();
     } catch (error) {
       try {
         this.realtimeWebSocketClient.close();
@@ -94,6 +125,7 @@ export class RealtimeSpeechClient {
     this.setWebSocketState(RealtimeWebSocketState.STOPPED);
     this.realtimeClientListener.onClose(close);
   };
+
   private onWebsocketMessage = (message: MessageEvent) => {
     if (message.data) {
       let data = JSON.parse(message.data.toString()) as RealtimeMessage;
@@ -110,6 +142,7 @@ export class RealtimeSpeechClient {
       }
     }
   };
+
   private onWebsocketError = (error: Error) => {
     console.error(error);
     this.setWebSocketState(RealtimeWebSocketState.ERROR);
@@ -119,67 +152,56 @@ export class RealtimeSpeechClient {
   private parseParameters = (params: RealtimeParameters) => {
     let parameterString = "/ws/transcribe/stream?";
     if (params.isAckEnabled !== undefined) parameterString += "isAckEnabled=" + params.isAckEnabled + "&";
+    if (params.encoding !== undefined) parameterString += "encoding=" + params.encoding + "&";
     if (params.shouldIgnoreInvalidCustomizations !== undefined) parameterString += "shouldIgnoreInvalidCustomizations=" + params.shouldIgnoreInvalidCustomizations + "&";
     if (params.partialSilenceThresholdInMs !== undefined) parameterString += "partialSilenceThresholdInMs=" + params.partialSilenceThresholdInMs + "&";
     if (params.finalSilenceThresholdInMs !== undefined) parameterString += "finalSilenceThresholdInMs=" + params.finalSilenceThresholdInMs + "&";
     if (params.stabilizePartialResults !== undefined) parameterString += "stabilizePartialResults=" + params.stabilizePartialResults + "&";
     if (params.languageCode !== undefined) parameterString += "languageCode=" + params.languageCode + "&";
     if (params.modelDomain !== undefined) parameterString += "modelDomain=" + params.modelDomain + "&";
-
-    // if (params.version !== undefined && params.version.length > 0) parameterString += "version=" + params.version + "&";
-    // if (params.speciality !== undefined) parameterString += "speciality=" + params.speciality + "&";
+    if (params.punctuation !== undefined && params.punctuation !== RealtimeParameters.Punctuation.None) parameterString += "punctuation=" + params.punctuation + "&";
     if (params.customizations !== undefined && params.customizations.length > 0) {
       parameterString += "customizations=" + encodeURIComponent(JSON.stringify(params.customizations)) + "&";
     }
     if (parameterString.charAt(parameterString.length - 1) === "&") parameterString = parameterString.substring(0, parameterString.length - 1);
-    // if (params.freeformTags !== undefined && Object.keys(params.freeformTags).length > 0) {
-    //   parameterString += "freeFormTags=" + encodeURIComponent(JSON.stringify(params.freeformTags));
-    // }
     return parameterString;
   };
 
-  private sendCreds = (authType: string) => {
+  private generateCredentials = async () => {
     const requestSigner: common.RequestSigner = new DefaultRequestSigner(this.provider);
     let headers: { [key: string]: any } = {};
-    // let jwt: string = "";
     let url = new URL(this.realtimeEndpoint);
-    (async () => {
-      const httpRequest: HttpRequest = {
-        uri: `${url.protocol}//${url.host}${url.pathname}`,
-        headers: new Headers(),
-        method: "GET",
-      };
+    const httpRequest: HttpRequest = {
+      uri: `${url.protocol}//${url.host}${url.pathname}`,
+      headers: new Headers(),
+      method: "GET",
+    };
 
-      await requestSigner.signHttpRequest(httpRequest);
+    await requestSigner.signHttpRequest(httpRequest);
 
-      httpRequest.headers.forEach((value, key) => {
-        headers[key] = value;
-      });
-      headers["host"] = url.host;
-      headers["uri"] = `${url.protocol}//${url.host}${url.pathname}`;
-      let payload: RealtimeMessageAuthenticationCredentials = {
-        authenticationType: authType,
-        compartmentId: this.compartmentId,
-        headers: headers,
-      };
-      this.realtimeAuthPayload = payload;
-    })().catch((err) => {
-      this.onWebsocketError(err);
-      this.close();
+    httpRequest.headers.forEach((value, key) => {
+      headers[key] = value;
     });
+    headers["host"] = url.host;
+    headers["uri"] = `${url.protocol}//${url.host}${url.pathname}`;
+    let payload: RealtimeMessageAuthenticationCredentials = {
+      authenticationType: "CREDENTIALS",
+      compartmentId: this.compartmentId,
+      headers: headers,
+    };
+    RealtimeSpeechClient.realtimeCredential = payload;
+    RealtimeSpeechClient.realtimeCredentialState = RealtimeCredentialState.ACTIVE;
   };
 
   public connect = () => {
     try {
-      this.realtimeWebSocketClient = new WebSocket(this.realtimeEndpoint + this.parseParameters(this.realtimeParameters), {
-        headers: { "Content-Type": this.realtimeParameters.encoding },
-      });
+      this.realtimeWebSocketClient = new WebSocket(this.realtimeEndpoint + this.parseParameters(this.realtimeParameters));
       this.realtimeWebSocketClient.onopen = (open: Event) => this.onWebsocketOpen(open);
       this.realtimeWebSocketClient.onmessage = (message: MessageEvent) => this.onWebsocketMessage(message);
       this.realtimeWebSocketClient.onclose = (close: CloseEvent) => this.onWebsocketClose(close);
       this.realtimeWebSocketClient.onerror = (error: ErrorEvent) => this.onWebsocketError(new Error(JSON.stringify(error)));
       this.setWebSocketState(RealtimeWebSocketState.OPENING);
-      this.sendCreds("CREDENTIALS");
+      this.initializeCredentialsCreation();
     } catch (err) {
       this.onWebsocketError(err);
       this.close();
@@ -207,5 +229,9 @@ export class RealtimeSpeechClient {
       event: RealtimeMessageSendFinalResult.event,
     };
     this.realtimeWebSocketClient.send(JSON.stringify(requestMessage));
+  };
+
+  public sendAudioData = (audioBytes: ArrayBuffer) => {
+    if (this.realtimeWebSocketClient.readyState === this.realtimeWebSocketClient.OPEN) this.realtimeWebSocketClient.send(audioBytes);
   };
 }
