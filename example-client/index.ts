@@ -1,8 +1,8 @@
 /*
-**
-** Copyright (c) 2024 Oracle and/or its affiliates
-** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
-*/
+ **
+ ** Copyright (c) 2024, 2025, Oracle and/or its affiliates
+ ** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+ */
 
 //sample terminal client to test the SDK
 //Warning! this requires SoX to work.
@@ -22,13 +22,10 @@ import { RealtimeMessageAckAudio, RealtimeMessageConnect, RealtimeMessageResult,
 
 var para = "";
 
-const { Command } = require('commander');
+const { Command } = require("commander");
 const program = new Command();
 
-program
-  .requiredOption('-c, --compartmentId <id>', 'Specify the Compartment ID')
-  .requiredOption('-r, --region <region>', 'Specify the Region')
-  .parse(process.argv);
+program.requiredOption("-c, --compartmentId <id>", "Specify the Compartment ID").requiredOption("-r, --region <region>", "Specify the Region").parse(process.argv);
 
 const options = program.opts();
 const serviceRegion = options.region; //like us-ashburn-1
@@ -39,15 +36,16 @@ const realtimeClientParameters: RealtimeParameters = {
   languageCode: "en-US",
   modelDomain: RealtimeParameters.ModelDomain.Generic,
   partialSilenceThresholdInMs: 0,
-  finalSilenceThresholdInMs: 2000,
+  finalSilenceThresholdInMs: 1000,
   stabilizePartialResults: RealtimeParameters.StabilizePartialResults.None,
   shouldIgnoreInvalidCustomizations: false,
   isAckEnabled: true,
+  punctuation: RealtimeParameters.Punctuation.None,
   encoding: "audio/raw;rate=16000", //try setting to "audio/raw;rate=8000"
 };
 
+// const provider: common.ConfigFileAuthenticationDetailsProvider = new common.ConfigFileAuthenticationDetailsProvider();
 const provider: common.SessionAuthDetailProvider = new common.SessionAuthDetailProvider();
-// const provider: common.SessionAuthDetailProvider = new common.SessionAuthDetailProvider();
 // can be customized to include a custom OCI Config Path and Profile)
 // const provider: common.SessionAuthDetailProvider = new common.SessionAuthDetailProvider("~/.oci/config", "DEFAULT");
 
@@ -65,7 +63,6 @@ class MyRealtimeClientListener implements RealtimeSpeechClientListener {
     } catch (error) {
       printLogs(["Audio Error: " + error]);
     }
-
   }
 
   onError(error: Error) {
@@ -114,7 +111,7 @@ class MyRealtimeClientListener implements RealtimeSpeechClientListener {
       audioStream = recorder.stream();
 
       audioStream.on("data", (d) => {
-        if (realtimeSDK.realtimeWebSocketClient.readyState === realtimeSDK.realtimeWebSocketClient.OPEN) realtimeSDK.realtimeWebSocketClient.send(d);
+        if (realtimeSDK.getWebSocketState() === RealtimeWebSocketState.RUNNING) realtimeSDK.sendAudioData(d);
       });
 
       if (connectMessage.event === RealtimeMessageConnect.event) {
@@ -194,7 +191,7 @@ process.stdin.on("keypress", (str, key) => {
     startSession(true);
   } else if (!key.ctrl && key.name === "s") {
     try {
-      if (realtimeSDK && realtimeSDK.getWebSocketState() !== RealtimeWebSocketState.STOPPED && realtimeSDK.realtimeWebSocketClient.readyState !== WebSocket.CLOSING) {
+      if (realtimeSDK && realtimeSDK.getWebSocketState() !== RealtimeWebSocketState.STOPPED && realtimeSDK.getWebSocketState() !== RealtimeWebSocketState.ERROR) {
         realtimeSDK.close();
         console.log("🔴 Stopped");
         instructions();

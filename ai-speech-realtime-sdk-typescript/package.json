@@ -1,6 +1,6 @@
 {
   "name": "@oracle/oci-ai-speech-realtime",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "OCI NodeJS client for the OCI AI Speech Realtime Service",
   "main": "dist/index.js",
   "scripts": {
@@ -30,8 +30,13 @@
     "ts-jest": "^29.2.5"
   },
   "dependencies": {
-    "oci-aispeech": "^2.91.0",
-    "oci-common": "^2.91.0",
+    "oci-aispeech": "^2.102.1",
     "ws": "^8.14.2"
+  },
+  "peerDependencies": {
+    "oci-common": "^2.99.0"
+  },
+  "optionalDependencies": {
+    "oci-common": "^2.99.0"
   }
 }
