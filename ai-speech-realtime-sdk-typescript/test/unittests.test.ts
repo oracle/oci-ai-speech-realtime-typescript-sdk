@@ -115,6 +115,7 @@ describe("Test typescript sdk client", () => {
       shouldIgnoreInvalidCustomizations: false,
       languageCode: "en-US",
       modelDomain: RealtimeParameters.ModelDomain.Generic,
+      modelType: "ORACLE",
       encoding: "audio/raw;rate=16000",
       punctuation: RealtimeParameters.Punctuation.Auto,
       customizations: ["test"],
@@ -129,6 +130,28 @@ describe("Test typescript sdk client", () => {
     mockWebsocket = MockWebSocket.instances[0];
     expect(mockWebsocket.url).toBe(
       "wss://realtime.aiservice.testId.oci.oraclecloud.com/ws/transcribe/stream?isAckEnabled=false&encoding=audio/raw;rate=16000&shouldIgnoreInvalidCustomizations=false&partialSilenceThresholdInMs=0&finalSilenceThresholdInMs=2000&stabilizePartialResults=NONE&languageCode=en-US&modelDomain=GENERIC&punctuation=AUTO&customizations=%5B%22test%22%5D"
+    );
+  });
+
+  it("should parse parameters whisper", () => {
+    const realtimeParameters: RealtimeParameters = {
+      isAckEnabled: false,
+      languageCode: "en",
+      modelDomain: RealtimeParameters.ModelDomain.Generic,
+      modelType: "WHISPER",
+      encoding: "audio/raw;rate=16000",
+      punctuation: RealtimeParameters.Punctuation.Auto,
+    } as RealtimeParameters;
+    realtimeEndpoint = "wss://realtime.aiservice.testId.oci.oraclecloud.com";
+    region = {
+      regionId: "testId",
+    } as any;
+    speechClient = new RealtimeSpeechClient(mockListener, provider, region, compartmentId, realtimeEndpoint, realtimeParameters);
+    MockWebSocket.instances = [];
+    speechClient.connect();
+    mockWebsocket = MockWebSocket.instances[0];
+    expect(mockWebsocket.url).toBe(
+      "wss://realtime.aiservice.testId.oci.oraclecloud.com/ws/transcribe/stream?isAckEnabled=false&encoding=audio/raw;rate=16000&languageCode=en&modelDomain=GENERIC&modelType=WHISPER&punctuation=AUTO"
     );
   });
 

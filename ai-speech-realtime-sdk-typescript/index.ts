@@ -5,5 +5,7 @@
  */
 
 import * as AIServiceSpeechRealtimeClient from "./src/client";
+import pkg from "./package.json";
+export const version = pkg.version;
 export * from "./src/client";
 export default AIServiceSpeechRealtimeClient;
