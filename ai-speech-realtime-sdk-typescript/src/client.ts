@@ -70,6 +70,7 @@ export class RealtimeSpeechClient {
     shouldIgnoreInvalidCustomizations: false,
     languageCode: "en-US",
     modelDomain: RealtimeParameters.ModelDomain.Generic,
+    modelType: "ORACLE",
     encoding: "audio/raw;rate=16000",
     punctuation: RealtimeParameters.Punctuation.None,
   } as RealtimeParameters;
@@ -159,6 +160,7 @@ export class RealtimeSpeechClient {
     if (params.stabilizePartialResults !== undefined) parameterString += "stabilizePartialResults=" + params.stabilizePartialResults + "&";
     if (params.languageCode !== undefined) parameterString += "languageCode=" + params.languageCode + "&";
     if (params.modelDomain !== undefined) parameterString += "modelDomain=" + params.modelDomain + "&";
+    if (params.modelType !== undefined && params.modelType !== "ORACLE") parameterString += "modelType=" + params.modelType + "&";
     if (params.punctuation !== undefined && params.punctuation !== RealtimeParameters.Punctuation.None) parameterString += "punctuation=" + params.punctuation + "&";
     if (params.customizations !== undefined && params.customizations.length > 0) {
       parameterString += "customizations=" + encodeURIComponent(JSON.stringify(params.customizations)) + "&";

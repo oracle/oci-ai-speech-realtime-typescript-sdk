@@ -35,6 +35,7 @@ const realtimeClientParameters: RealtimeParameters = {
   customizations: [],
   languageCode: "en-US",
   modelDomain: RealtimeParameters.ModelDomain.Generic,
+  modelType: "ORACLE",
   partialSilenceThresholdInMs: 0,
   finalSilenceThresholdInMs: 1000,
   stabilizePartialResults: RealtimeParameters.StabilizePartialResults.None,
